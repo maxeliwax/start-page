@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import { ref, getDownloadURL, uploadBytesResumable, listAll } from "firebase/storage";
 import { storage } from "./firebase";
 import "./App.css";
 import { BrowserRouter as Router, Switch, Route, Link, NavLink } from "react-router-dom";
@@ -15,6 +15,31 @@ function App() {
       console.log("Files available:", downloadURLs);
     }
   }, [downloadURLs]);
+
+  useEffect(() => {
+    fetchDownloadURLs();
+  }, []);
+
+  const fetchDownloadURLs = () => {
+    // Fetch the download URLs of the uploaded files from Firebase Storage
+    const filesRef = ref(storage, "files");
+    const listAllPromise = listAll(filesRef);
+
+    listAllPromise
+      .then((res) => {
+        const promises = res.items.map((itemRef) => getDownloadURL(itemRef));
+        Promise.all(promises)
+          .then((urls) => {
+            setDownloadURLs(urls);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const formHandler = (e) => {
     e.preventDefault();
@@ -61,7 +86,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <h1>monke paradise</h1>
+        <h1>moaaaaanke paradise</h1>
         <h1>share the best Pictures with monke</h1>
         <ul className="nav-links">
           <li>
