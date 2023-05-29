@@ -2,13 +2,15 @@ import { useState, useEffect } from "react";
 import { ref, getDownloadURL, uploadBytesResumable, listAll } from "firebase/storage";
 import { storage } from "./firebase";
 import "./App.css";
-import { BrowserRouter as Router, Switch, Route, Link, NavLink } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, NavLink } from "react-router-dom";
 import AboutPage from "./AboutPage.js";
+import AdminPanel from "./adminPanel.js";
+
 
 function App() {
   const [progress, setProgress] = useState(0);
   const [downloadURLs, setDownloadURLs] = useState([]);
-
+  
   useEffect(() => {
     if (downloadURLs.length > 0) {
       // Perform any additional actions with the download URLs here
@@ -95,8 +97,8 @@ function App() {
             </NavLink>
           </li>
           <li>
-            <NavLink to="/about" activeClassName="active-link">
-              About
+            <NavLink to="/AboutPage.js" activeClassName="active-link">
+              Login Page
             </NavLink>
           </li>
           <li>
@@ -117,29 +119,30 @@ function App() {
         </ul>
 
         <Switch>
-          <Route exact path="/">
-            <div>
-              <form onSubmit={formHandler}>
-                <input type="file" className="input" multiple />
-                <button type="submit">Upload</button>
-              </form>
-              <div className="progress-bar">
-                <div className="progress" style={{ width: `${progress}%` }}></div>
-              </div>
-              <h2>Uploading: {progress}%</h2>
-              {downloadURLs.length > 0 && (
-                <div>
-                  <h3>Uploaded Pictures:</h3>
-                  <div className="image-gallery">
-                    {downloadURLs.map((url, index) => (
-                      <img key={index} src={url} alt={`Uploaded ${index}`} className="uploaded-image" />
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </Route>
-          <Route path="/about" component={AboutPage} />
+        <Route exact path="/">
+  <div>
+    <form onSubmit={formHandler}>
+      <input type="file" className="input" multiple />
+      <button type="submit">Upload</button>
+    </form>
+    <div className="progress-bar">
+      <div className="progress" style={{ width: `${progress}%` }}></div>
+    </div>
+    <h2>Uploading: {progress}%</h2>
+    {downloadURLs.length > 0 && (
+      <div>
+        <h3>Uploaded Pictures:</h3>
+        <div className="image-gallery">
+          {downloadURLs.map((url, index) => (
+            <img key={index} src={url} alt={`Uploaded ${index}`} className="uploaded-image" />
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</Route>
+
+          <Route path="/AboutPage.js" component={AboutPage} />
           <Route path="/monkey-types">
             <h1>Monkey Types</h1>
             <ul className="monkey-list">
@@ -203,6 +206,9 @@ function App() {
               </li>
               {/* Add more zoos here */}
             </ul>
+          </Route>
+          <Route path="/adminPanel.js">
+            <AdminPanel />
           </Route>
         </Switch>
       </div>
